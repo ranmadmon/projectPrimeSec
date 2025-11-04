@@ -313,6 +313,7 @@ public class    GeneralController {
             ClientEntity client = new ClientEntity();
             client.setName(name);
             client.setManager(manager);
+            client.setStatus("1");
             persist.save(client);
 
             response.setSuccess(true);
@@ -504,13 +505,14 @@ public class    GeneralController {
             TaskEntity saved = persist.saveTaskWithRequirements(req);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(new BasicResponse(true, 0));  // 0 = SUCCESS בקבועים שלכם
+                    .body(new BasicResponse(true, 0));  // 0 = SUCCESS
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BasicResponse(false, 1));  // 1 = FAIL
         }
     }
+
     @PostMapping("/abilities")
     public ResponseEntity<AbilityEntity> createAbility(@RequestBody Map<String,String> body) {
         String name = body.get("name");

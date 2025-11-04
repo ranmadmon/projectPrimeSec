@@ -6,6 +6,7 @@ public class TaskRequest {
     private String name;
     private int averageTime;
     private List<String> requires;
+    private String status;
 
     public TaskRequest() { }  // ברירת מחדל, נדרש ל־Jackson
 
@@ -13,6 +14,7 @@ public class TaskRequest {
         this.name = name;
         this.averageTime = averageTime;
         this.requires = requires;
+        this.status = "1";
     }
 
     // getters & setters
@@ -40,4 +42,5 @@ public class TaskRequest {
     public void setRequires(List<String> requires) {
         this.requires = requires;
     }
+
 }

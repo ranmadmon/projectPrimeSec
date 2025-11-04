@@ -1,5 +1,7 @@
 package com.ashcollege.entities;
 
+import javax.persistence.Column;
+
 public class ClientEntity {
     private int id;
     private String name;

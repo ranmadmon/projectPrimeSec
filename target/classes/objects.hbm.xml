@@ -46,7 +46,7 @@
         </id>
         <property name="name" type="string" column="name"/>
         <property name="averageTime" type="int" column="average_time"/>
-        <property name="status" type="string" column="status" not-null="true" length="20"/>
+        <property name="status" type="string" column="status"  length="20"/>
 
     </class>
 
@@ -57,7 +57,7 @@
         </id>
         <property name="name" type="string" column="name"/>
         <many-to-one name="manager" class="com.ashcollege.entities.UserEntity" column="manager_id"/>
-        <property name="status" type="string" column="status" not-null="true" length="20"/>
+        <property name="status" type="string" column="status"  length="20"/>
     </class>
 
 

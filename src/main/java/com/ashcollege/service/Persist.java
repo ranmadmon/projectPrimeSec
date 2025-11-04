@@ -199,6 +199,7 @@ public class Persist {
         TaskEntity task = new TaskEntity();
         task.setName(req.getName());
         task.setAverageTime(req.getAverageTime());
+        task.setStatus("1");
         session.save(task);
 
         // 2. שמירת דרישות כ–JSON בשדה abilities
