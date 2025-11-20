@@ -23,19 +23,20 @@ import static com.ashcollege.utils.Constants.*;
 @Profile("production")
 public class AppConfig {
 
-
     @Bean
     public DataSource dataSource() throws Exception {
-        String jdbcUrl = "jdbc:mysql://localhost:3306/?useSSL=false&allowPublicKeyRetrieval=true";
-        Class.forName("com.mysql.jdbc.Driver");
+        String jdbcUrl = "jdbc:mysql://primesec-db.c0hguyomml90.us-east-1.rds.amazonaws.com:3306/?useSSL=false&allowPublicKeyRetrieval=true";
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
         try (Connection connection = DriverManager.getConnection(jdbcUrl, DB_USERNAME, DB_PASSWORD);
              Statement statement = connection.createStatement()) {
             String createSchemaSQL = "CREATE SCHEMA IF NOT EXISTS " + SCHEMA;
             statement.executeUpdate(createSchemaSQL);
         }
+
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass("com.mysql.jdbc.Driver");
-        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/" + SCHEMA + "?useSSL=false&allowPublicKeyRetrieval=true");
+        dataSource.setDriverClass("com.mysql.cj.jdbc.Driver");
+        dataSource.setJdbcUrl("jdbc:mysql://primesec-db.c0hguyomml90.us-east-1.rds.amazonaws.com:3306/" + SCHEMA + "?useSSL=false&allowPublicKeyRetrieval=true");
         dataSource.setUser(DB_USERNAME);
         dataSource.setPassword(DB_PASSWORD);
         dataSource.setMaxPoolSize(20);
@@ -76,5 +77,4 @@ public class AppConfig {
             }
         };
     }
-
 }

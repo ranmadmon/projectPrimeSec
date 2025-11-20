@@ -3,8 +3,8 @@ package com.ashcollege.utils;
 
 public class Constants {
     public static final String SCHEMA = "primesec_database";
-    public static final String DB_USERNAME = "root";
-    public static final String DB_PASSWORD = "madmon12072006";
+    public static final String DB_USERNAME = "admin";
+    public static final String DB_PASSWORD = "Primesec_2025";
     public static final String SMS_TOKEN = "ZmVlZGJhY2sxOnlheGZxMzJpd2lnYW15bHBvMG9tNHVycjU]";
     public static final int FAIL = 401;
     public static final int SUCCESS = 200;
