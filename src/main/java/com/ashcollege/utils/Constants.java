@@ -2,6 +2,7 @@ package com.ashcollege.utils;
 
 
 public class Constants {
+    public static final String DB_HOST = "primesec-db.c0hguyomml90.us-east-1.rds.amazonaws.com";
     public static final String SCHEMA = "primesec_database";
     public static final String DB_USERNAME = "admin";
     public static final String DB_PASSWORD = "Primesec_2025";
