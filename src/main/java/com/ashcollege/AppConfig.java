@@ -53,7 +53,7 @@ public class AppConfig {
         sessionFactoryBean.setDataSource(dataSource());
 
         Properties hibernateProperties = new Properties();
-        hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
+        hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         hibernateProperties.put("hibernate.hbm2ddl.auto", "update");
         hibernateProperties.put("hibernate.jdbc.batch_size", 50);
         hibernateProperties.put("hibernate.connection.characterEncoding", "utf8");
