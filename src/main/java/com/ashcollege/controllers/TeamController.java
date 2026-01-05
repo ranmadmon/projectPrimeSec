@@ -1,5 +1,6 @@
 package com.ashcollege.controllers;
 
+import com.ashcollege.entities.RoleEntity;
 import com.ashcollege.entities.TeamEntity;
 import com.ashcollege.entities.UserEntity;
 import com.ashcollege.responses.TeamDetailResponse;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 
@@ -115,36 +117,58 @@ public class TeamController {
     }
 
     // 5. מחיקת צוות (רק אם ריק)
+    @Transactional
     @DeleteMapping("/teams/{id}")
     public void deleteTeam(@PathVariable int id, @RequestParam String token) {
-        // שליפה
+
+        // TODO: validate token אם צריך
+
+        // 1) שליפה
         TeamEntity team = persist.loadObject(TeamEntity.class, id);
         if (team == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found");
         }
 
-        // בדיקה אם יש משתמשים בצוות
+        // 2) בדיקה אם יש משתמשים בצוות (חוץ מראש הצוות)
+        UserEntity leader = team.getHead();
+        if (leader == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team has no head");
+        }
+
         boolean hasMembers = persist.loadList(UserEntity.class).stream()
-                .anyMatch(u -> u.getTeamId() == id && !u.getUsername().equals(team.getHead().getUsername()));
+                .anyMatch(u -> u.getTeamId() == id && !u.getUsername().equals(leader.getUsername()));
+
         if (hasMembers) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete non-empty team");
         }
 
-        // שליפת ראש הצוות
-        UserEntity leader = team.getHead();
+        // 3) עדכון ראש הצוות: תפקיד + ניתוק מהצוות
         int roleId = leader.getRole().getId();
 
-        // עדכון תפקיד ראש הצוות
+        // במקום לשנות ID (אסור!) — מציבים RoleEntity אחר מה־DB
         if (roleId == 2) {
-            leader.getRole().setId(1); // teamLeader → worker
+            RoleEntity workerRole = persist.loadObject(RoleEntity.class, 1); // teamLeader -> worker
+            if (workerRole == null) throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role 1 missing");
+            leader.setRole(workerRole);
         } else if (roleId == 4) {
-            leader.getRole().setId(3); // admin teamLeader → admin worker
+            RoleEntity adminWorkerRole = persist.loadObject(RoleEntity.class, 3); // admin teamLeader -> admin worker
+            if (adminWorkerRole == null) throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role 3 missing");
+            leader.setRole(adminWorkerRole);
         }
-        leader.setTeamId(0); // להסיר מהצוות
+
+        leader.setTeamId(0);
+
+        // אם יש לך גם relation כמו leader.setTeam(TeamEntity) אז תוסיף גם:
+        // leader.setTeam(null);
+
         persist.save(leader);
 
-        // מחיקת הצוות
+        // 4) מחיקה (ודא שזה באמת מוחק מנוהל)
+        // אם persist.remove לא עושה flush, לפעמים תרגיש "הצלחה" בלי מחיקה עד הקומיט.
         persist.remove(team);
+
+        // אם יש לך persist.flush() תוסיף כדי להכריח מחיקה ולהעלות שגיאות FK מייד:
+        // persist.flush();
     }
 
 }
